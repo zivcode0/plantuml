@@ -1,0 +1,21 @@
+@startuml
+
+title   "Internet Banking System - Context Diagram"
+header  "Revision 1.0 - 2023-10-01"
+!include <C4/C4_Context>
+!include <tupadr3/font-awesome/users>
+
+LAYOUT_WITH_LEGEND()
+
+Person(customers, "Personal Banking Customer", "A customer of the bank, with personal bank accounts", $sprite="users")
+System(IBS, "Internet Banking System", "Allows customers to view information about their bank accounts, and make payments.")
+System_Ext(Mainframe, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions, etc.")
+System_Ext(Email, "E-mail System", "The internal Microsoft Exchange e-mail system.")
+
+Rel_D(customers, IBS, "Views account balances", "HTTPS")
+Rel_D(IBS, Mainframe, "Get account information from, and makes payments using", "API")
+Rel_R(IBS, Email, "Sends e-mails using", "API")
+Rel_U(Email, customers, "Sends e-mails to", "SMTP")
+
+footer "Revision 1.0 - 2023-10-01"
+@enduml

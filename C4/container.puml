@@ -1,0 +1,47 @@
+@startuml
+
+title "Internet Banking System - Container Diagram"
+header "Revision 1.0 - 2023-10-01"
+
+
+!include <C4/C4_Container>
+!include <tupadr3/font-awesome/users>
+!include <tupadr3/devicons/android>
+!include <tupadr3/devicons/apple>
+!include <tupadr3/devicons/react>
+!include <tupadr3/devicons2/spring_original>
+LAYOUT_WITH_LEGEND()
+
+Person(customers, "Personal Banking Customer", $descr="A customer of the bank, with personal bank accounts", $sprite="users")
+
+System_Boundary(IBS, "Internet Banking System") {
+    Container(webApp, "Web Application", "Java, Spring MVC", "Delivers the static content and the Internet banking single page application", $sprite="spring_original")
+    Container(spa, "Single-Page App", "React, JS", "Provides all of the Internet banking functionality to customers via their web browser.", $sprite="react")
+    Container(iOS, "Mobile App", "iOS", "Provides a limited subset of the Internet banking functionality to customers via their mobile devices.",$sprite="android")
+    Container(aOS, "Mobile App", "aOS", "Provides a limited subset of the Internet banking functionality to customers via their mobile devices.",$sprite="apple")   
+    Container(api, "API Application", "Java, Spring Boot REST service", "Provides Internet banking funcitionality via a JSON/HTTPS API.")
+    ContainerDb(database, "Database", "MySQL", "Stores user registration information, hashed authentication credentialsm, access logs, etc")
+}
+
+
+System_Ext(Mainframe, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions, etc.")
+System_Ext(Email, "E-mail System", "The internal Microsoft Exchange e-mail system.")
+
+Rel_D(customers, webApp, "Views bank website using", "HTTPS")
+Rel(webApp, spa, "Delivers to customer's web browser", "HTML, CSS, JS")
+Rel_D(customers,spa, "Views account balances, and makes pamynents using")
+Rel_D(customers,iOS, "Views account balances, and makes pamynents using")
+Rel_D(customers,aOS, "Views account balances, and makes pamynents using")
+
+Rel_D(spa, api, "Makes API calls to", "HTTPS")
+Rel_D(iOS, api, "Makes API calls to", "HTTPS")
+Rel_D(aOS, api, "Makes API calls to", "HTTPS")
+
+Rel_L(api, database, "Reads from and writes to", "JPA/Hibernate, JDBC")
+
+Rel_D(api, Mainframe, "Get account information from, and makes payments using", "API")
+Rel(api, Email, "Sends e-mails using", "API")
+Rel_U(Email, customers, "Sends e-mails to", "SMTP")
+
+footer "Revision 1.0 - 2023-10-01"
+@enduml

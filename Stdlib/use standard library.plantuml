@@ -1,0 +1,25 @@
+@startuml Hello World Web Application
+!pragma revision 1
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/master/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/AzureC4Integration.puml
+!includeurl AzurePuml/Web/AzureWebApp.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User")
+
+Container(spa, "Single-Page App", "React, JS")
+AzureWebApp(webApp, "Web & API App", "Springboot, Java", "Delivers the SPA and provides RESTful web APIs which are consumed from the SPA")
+
+Rel(user, spa, "Uses", "HTTPS")
+Rel(user, webApp, "Uses", "HTTPS")
+
+
+Rel_Neighbor(spa, webApp, "Uses", "JSON, HTTPS")
+Rel_Back_Neighbor(spa, webApp, "Delivers")
+
+@enduml
