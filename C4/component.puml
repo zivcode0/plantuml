@@ -1,0 +1,53 @@
+@startuml
+
+title "API Applications - Component Diagram"
+header "Revision 1.0 - 2023-10-01"
+
+
+!include <C4/C4_Component>
+!include <tupadr3/font-awesome/users>
+!include <tupadr3/devicons/android>
+!include <tupadr3/devicons/apple>
+!include <tupadr3/devicons/react>
+!include <tupadr3/devicons2/spring_original>
+LAYOUT_WITH_LEGEND()
+
+Container(spa, "Single-Page App", "React, JS", "Provides all of the Internet banking functionality to customers via their web browser.", $sprite="react")
+Container(iOS, "Mobile App", "iOS", "Provides a limited subset of the Internet banking functionality to customers via their mobile devices.",$sprite="android")
+Container(aOS, "Mobile App", "aOS", "Provides a limited subset of the Internet banking functionality to customers via their mobile devices.",$sprite="apple")   
+    
+
+System_Boundary(IBS, "Internet Banking System") {
+    Component(SignIn, "Sign In Controller", "Component: Spring MVC Rest Controller", "Allows users to sign in to the Internet Banking System")
+    Component(ResetPassword, "Reset Password Controller", "Component: Spring MVC Rest Controller", "Allows users to reset their passwords with a single use URL")
+    Component(AccountSummary, "Account Summary Controller", "Component: Spring MVC Rest Controller", "Provides customers with a summary of their bank accounts")
+    Component(Security, "Security Component", "Component: Spring Bean", "Provides functionalty related to signing in, changing passwords, etc.")
+    Component(EmailComponent, "E-mail Component", "Component: Spring Bean", "Sends e-mails to users")
+    Component(MF, "Mainframe Banking System Facade", "Component: Spring Bean", "A facade onto the mainframe banking system")
+    
+}
+
+ContainerDb(database, "Database", "MySQL", "Stores user registration information, hashed authentication credentialsm, access logs, etc")
+
+System_Ext(Mainframe, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions, etc.")
+System_Ext(Email, "E-mail System", "The internal Microsoft Exchange e-mail system.")
+
+Rel(spa, SignIn, "Makes API calls to", "JSON/HTTPS")
+Rel(spa, ResetPassword, "Makes API calls to", "JSON/HTTPS")
+Rel(spa, AccountSummary, "Makes API calls to", "JSON/HTTPS")
+Rel(iOS, SignIn, "Makes API calls to", "JSON/HTTPS")
+Rel(iOS, ResetPassword, "Makes API calls to", "JSON/HTTPS")
+Rel(iOS, AccountSummary, "Makes API calls to", "JSON/HTTPS")
+Rel(aOS, SignIn, "Makes API calls to", "JSON/HTTPS")
+Rel(aOS, ResetPassword, "Makes API calls to", "JSON/HTTPS")
+Rel(aOS, AccountSummary, "Makes API calls to", "JSON/HTTPS")
+Rel(SignIn, Security, "Uses")
+Rel(ResetPassword, EmailComponent, "Uses")
+Rel(AccountSummary, MF, "Uses")
+Rel(Security,database, "Reads from and writes to", "JPA/Hibernate, JDBC")
+Rel(EmailComponent,Email, "Sends e-mails using", "SMTP")
+Rel(MF,Mainframe, "Makes API calls to", "JSON/HTTPS")
+
+
+footer "Revision 1.0 - 2023-10-01"
+@enduml
